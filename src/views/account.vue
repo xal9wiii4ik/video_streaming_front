@@ -1,12 +1,19 @@
 <template>
   <div class="container">
     <div class="nav_bar">
-      <a class="nav_bar__link">
+      <a class="nav_bar__link" @click="this.getVideos()">
         <h4 class="nav_bar__link__text">My Videos</h4>
       </a>
       <a class="nav_bar__link" @click="this.getAccount()">
         <h4 class="nav_bar__link__text">My Account</h4>
       </a>
+    </div>
+    <div class="videos" v-if="is_vue_my_videos">
+      <video-item
+          v-for="video in videos"
+          v-bind:key="video.id"
+          v-bind:video="video">
+      </video-item>
     </div>
     <div class="my_account" v-if="is_vue_my_account">
       <div class="my_account__data">
@@ -51,6 +58,10 @@
 
 <script>
 import {ip} from '../main'
+import videoItem from '@/components/video-item'
+
+const access_token = localStorage.getItem('access_token')
+const user_pk = localStorage.getItem('user_pk')
 
 export default {
   name: "account",
@@ -62,14 +73,29 @@ export default {
       first_name: '',
       last_name: '',
       is_vue_my_account: false,
-      is_update_data: false
+      is_update_data: false,
+      videos: [],
+      is_vue_my_videos: false
     }
   },
+  components: {'video-item': videoItem},
   methods: {
-    async update_account() {
-      const user_pk = localStorage.getItem('user_pk')
-      const access_token = localStorage.getItem('access_token')
+    async getVideos() {
+      this.is_vue_my_videos = true
+      this.is_vue_my_account = false
 
+      const response = await fetch(`http://${ip}/api/video/user_videos/`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Token ${access_token}`,
+        },
+      })
+
+      if (response.status === 200) {
+        this.videos = await response.json()
+      }
+    },
+    async update_account() {
       const data = {
         username: this.username,
         email: this.email,
@@ -87,7 +113,7 @@ export default {
         body: JSON.stringify(data)
       })
       const response_data = await response.json()
-      console.log(this.username)
+
       if (response.status === 200) {
         this.username = response_data.username
         this.email = response_data.email
@@ -97,11 +123,9 @@ export default {
       }
     },
     async getAccount() {
+      this.is_vue_my_videos = false
       this.is_vue_my_account = true
       try {
-        const user_pk = localStorage.getItem('user_pk')
-        const access_token = localStorage.getItem('access_token')
-
         this.username = localStorage.getItem('username')
 
         const response = await fetch(`http://${ip}/api/account/${user_pk}/`, {
@@ -155,6 +179,13 @@ export default {
 .nav_bar__link__text {
   font-size: 20px;
   color: black;
+}
+
+.videos {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
 }
 
 .my_account {

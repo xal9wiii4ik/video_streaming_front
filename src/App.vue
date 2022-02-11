@@ -18,6 +18,11 @@
           </router-link>
         </li>
         <li class="header__list__item">
+          <router-link v-if="is_login" class="header__list__link" to="/upload_video">
+            <h4 class="header__list__link">upload video</h4>
+          </router-link>
+        </li>
+        <li class="header__list__item">
           <a v-if="is_login" v-on:click="logout" class="header__list__link">
             <h4 class="header__list__link">logout</h4>
           </a>
@@ -83,6 +88,7 @@ export default {
         }, localStorage.getItem('access_token_expire') * 60 * 1000 / 4)
       } else {
         this.is_login = false
+        localStorage.setItem('access_token', '')
       }
     },
     async getLogin() {
@@ -96,7 +102,9 @@ export default {
     async logout() {
       localStorage.clear()
       this.is_login = false
+      location.reload()
       await this.$router.push('/sign_in')
+      localStorage.setItem('access_token', '')
     }
   }
 }

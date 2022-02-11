@@ -73,7 +73,7 @@ export default {
           const messageText = document.querySelector(".shadow-message-text");
           messageBox.classList.add("show");
           messageBox.classList.remove("hide");
-          messageText.innerHTML = token_data.ValidationError;
+          messageText.innerHTML = token_data.error;
         }
       } catch (e) {
         alert(e);
