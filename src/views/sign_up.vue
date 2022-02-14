@@ -71,7 +71,7 @@ export default {
           last_name: this.last_name,
           email: this.email
         }
-        const response = await fetch(`http://${ip}/auth/register/`, {
+        const response = await fetch(`http://${ip}/api/account/register/`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -101,7 +101,7 @@ export default {
           const messageText = document.querySelector(".shadow-message-text");
           messageBox.classList.add("show");
           messageBox.classList.remove("hide");
-          messageText.innerHTML = response_data.ValidationError;
+          messageText.innerHTML = response_data.error;
         }
       } catch (e) {
         alert(e);

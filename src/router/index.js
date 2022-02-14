@@ -21,6 +21,16 @@ const routes = [
         name: 'account',
         component: () => import('@/views/account')
     },
+    {
+        path: '/video-detail/:id',
+        name: 'video-detail',
+        component: () => import('@/views/video-detail')
+    },
+    {
+        path: '/upload_video',
+        name: 'vupload_video',
+        component: () => import('@/views/upload_video')
+    },
 ]
 
 const router = createRouter({
